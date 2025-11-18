@@ -1,0 +1,32 @@
+ros702() {
+    # --- ROS 2 and Workspace Setup ---
+    local WS="$HOME/Documents/Teaching/fall2025/ENPM702/ros2_ws"
+    local ROS2_DISTRO="jazzy"
+
+    # Source ROS install
+    if [[ -f "/opt/ros/${ROS2_DISTRO}/setup.bash" ]]; then
+        source "/opt/ros/${ROS2_DISTRO}/setup.bash"
+    else
+        echo "⚠️ ROS 2 distro '${ROS2_DISTRO}' not found under /opt/ros."
+        return 1
+    fi
+
+    # Source workspace overlay if available
+    if [[ -f "${WS}/install/setup.bash" ]]; then
+        source "${WS}/install/setup.bash"
+        echo "📦 Workspace overlay loaded: ${WS}"
+    else
+        echo "⚠️ Workspace overlay missing: ${WS}/install/setup.bash"
+        echo "   Run: colcon build --symlink-install"
+    fi
+
+    # Setup argcomplete (only once per shell session)
+    if [[ -z "$ROS2_ARGCOMPLETE_LOADED" ]] && command -v register-python-argcomplete >/dev/null; then
+        eval "$(register-python-argcomplete ros2)"
+        eval "$(register-python-argcomplete colcon)"
+        export ROS2_ARGCOMPLETE_LOADED=1
+    fi
+
+    cd "${WS}" || return
+    echo "➡️ Switched to workspace: ${WS}"
+}
