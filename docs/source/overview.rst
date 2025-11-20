@@ -1,7 +1,7 @@
 .. default-domain:: cpp
 
 =====================================
-ROS Topics Overview
+ROS 2 Overview
 =====================================
 
 This document provides a concise overview of the material covered in **ENPM702 (Fall 2025)**.
