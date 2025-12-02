@@ -45,7 +45,7 @@ void TwoMutexDemoNode::timer1_callback()
                 Color::YELLOW, std::hash<std::thread::id>{}(std::this_thread::get_id()), Color::RESET);
     
     // Simulate some work
-    // std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(20000));
     
     RCLCPP_INFO(this->get_logger(), "%s[MUTEX1] Timer1 end%s", Color::YELLOW, Color::RESET);
 }
