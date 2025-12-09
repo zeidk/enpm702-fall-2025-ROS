@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="aruco_marker_0">
+    <static>true</static>
+    <link name="marker_link">
+      
+      <!-- White backing/border -->
+      <visual name="border_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.18 0.18 0.002</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+        </material>
+      </visual>
+      
+      <!-- ArUco marker texture on top -->
+      <visual name="marker_visual">
+        <pose>0 0 0.0011 0 0 0</pose>  <!-- Just above the white backing -->
+        <geometry>
+          <plane>
+            <size>0.15 0.15</size>
+          </plane>
+        </geometry>
+        <material>
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+          <pbr>
+            <metal>
+              <albedo_map>model://aruco_marker_0/materials/textures/aruco_marker_0.png</albedo_map>
+              <metalness>0.0</metalness>
+              <roughness>1.0</roughness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      
+      <!-- Collision -->
+      <collision name="marker_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.18 0.18 0.005</size>
+          </box>
+        </geometry>
+      </collision>
+      
+    </link>
+  </model>
+</sdf>

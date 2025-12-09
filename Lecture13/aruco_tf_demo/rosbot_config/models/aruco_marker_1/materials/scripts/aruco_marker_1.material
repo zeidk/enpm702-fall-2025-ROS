@@ -1,0 +1,56 @@
+/*
+ * Ogre Material Script for ArUco Marker 1
+ *
+ * To use this material:
+ * 1. Generate ArUco marker ID 1 image (e.g., using OpenCV or online generator)
+ * 2. Save as PNG file: materials/textures/aruco_marker_1.png
+ * 3. Recommended size: 200x200 pixels or higher for good detection
+ *
+ * Generate marker with OpenCV:
+ *   import cv2
+ *   aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+ *   marker_img = cv2.aruco.generateImageMarker(aruco_dict, 1, 200)
+ *   cv2.imwrite('aruco_marker_1.png', marker_img)
+ */
+
+material ArUcoMarker1/Marker
+{
+  technique
+  {
+    pass
+    {
+      // Ambient and diffuse lighting
+      ambient 1.0 1.0 1.0 1.0
+      diffuse 1.0 1.0 1.0 1.0
+      specular 0.1 0.1 0.1 1.0 12.5
+
+      texture_unit
+      {
+        // Path relative to the materials/textures directory
+        texture aruco_marker_1.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+/*
+ * Alternative material with no lighting (flat/unlit)
+ * Use this if the marker appears too dark or has lighting artifacts
+ */
+material ArUcoMarker1/MarkerUnlit
+{
+  technique
+  {
+    pass
+    {
+      lighting off
+
+      texture_unit
+      {
+        texture aruco_marker_1.png
+        filtering trilinear
+      }
+    }
+  }
+}

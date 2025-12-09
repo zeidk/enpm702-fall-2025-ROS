@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>aruco_tf_demo</name>
+  <version>0.1.0</version>
+  <description>Demo package for ArUco marker detection and coordinate transforms with TurtleBot3</description>
+  <maintainer email="zeidk@umd.edu">zeidk</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- ROS 2 Core Dependencies -->
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+
+  <!-- Image Processing -->
+  <depend>image_transport</depend>
+  <depend>cv_bridge</depend>
+
+  <!-- Simulation -->
+  <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+
+  <!-- TF -->
+  <depend>rqt_tf_tree</depend>
+  <depend>rqt_image_view</depend>
+  <depend>kdl_parser</depend>
+
+  <!-- Launch -->
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <gazebo_ros gazebo_model_path="${prefix}/models" />
+  </export>
+</package>

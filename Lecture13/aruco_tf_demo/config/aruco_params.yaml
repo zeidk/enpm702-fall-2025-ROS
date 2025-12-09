@@ -1,0 +1,118 @@
+# ArUco Detector Configuration
+# =============================
+# This configuration file defines parameters for ArUco marker detection
+# and coordinate transform publishing.
+
+aruco_detector:
+  ros__parameters:
+    # ---------------------------------------------------------------------------
+    # Marker Configuration
+    # ---------------------------------------------------------------------------
+    
+    # Physical size of the ArUco marker (side length in meters)
+    # This must match the actual printed marker size for accurate pose estimation
+    marker_size: 0.15
+    
+    # ArUco dictionary to use for detection
+    # Common options: DICT_4X4_50, DICT_4X4_100, DICT_5X5_50, DICT_6X6_50
+    # See OpenCV documentation for full list
+    dictionary: "DICT_4X4_50"
+    
+    # IDs of markers to detect (empty list = detect all)
+    # marker_ids: [0, 1, 2]
+    marker_ids: []
+
+    # ---------------------------------------------------------------------------
+    # Camera Configuration
+    # ---------------------------------------------------------------------------
+    
+    # Camera image topic
+    camera_topic: "/camera/image_raw"
+    
+    # Camera info topic (for intrinsic parameters)
+    camera_info_topic: "/camera/camera_info"
+    
+    # Camera frame ID (optical frame for proper orientation)
+    camera_frame: "camera_rgb_optical_frame"
+
+    # ---------------------------------------------------------------------------
+    # TF Publishing
+    # ---------------------------------------------------------------------------
+    
+    # Whether to publish TF transforms for detected markers
+    publish_tf: true
+    
+    # Parent frame for marker transforms
+    # Options: "camera_frame" (relative to camera) or "map" (global)
+    tf_parent_frame: "camera_rgb_optical_frame"
+    
+    # Prefix for marker frame IDs (e.g., "aruco_" -> "aruco_0", "aruco_1", ...)
+    marker_frame_prefix: "aruco_marker_"
+
+    # ---------------------------------------------------------------------------
+    # Detection Parameters
+    # ---------------------------------------------------------------------------
+    
+    # Adaptive thresholding parameters
+    adaptive_thresh_win_size_min: 3
+    adaptive_thresh_win_size_max: 23
+    adaptive_thresh_win_size_step: 10
+    adaptive_thresh_constant: 7
+    
+    # Corner refinement method: "NONE", "SUBPIX", "CONTOUR", "APRILTAG"
+    corner_refinement_method: "SUBPIX"
+    
+    # Minimum marker perimeter rate (relative to image size)
+    min_marker_perimeter_rate: 0.03
+    
+    # Maximum marker perimeter rate (relative to image size)
+    max_marker_perimeter_rate: 4.0
+
+    # ---------------------------------------------------------------------------
+    # Visualization
+    # ---------------------------------------------------------------------------
+    
+    # Publish visualization markers (RViz)
+    publish_markers: true
+    
+    # Publish annotated image with detected markers
+    publish_debug_image: true
+    debug_image_topic: "/aruco_detector/debug_image"
+
+    # ---------------------------------------------------------------------------
+    # Filtering
+    # ---------------------------------------------------------------------------
+    
+    # Enable pose filtering to reduce noise
+    enable_pose_filter: true
+    
+    # Low-pass filter alpha (0-1, lower = more smoothing)
+    filter_alpha: 0.3
+
+# Marker world poses (for reference - these match the world file)
+# These can be used for localization or ground truth comparison
+marker_world_poses:
+  ros__parameters:
+    marker_0:
+      x: 1.5
+      y: 0.0
+      z: 0.3
+      roll: 0.0
+      pitch: 0.0
+      yaw: 3.14159  # Facing -X
+    
+    marker_1:
+      x: 0.0
+      y: 1.5
+      z: 0.3
+      roll: 0.0
+      pitch: 0.0
+      yaw: -1.5708  # Facing -Y
+    
+    marker_2:
+      x: -1.2
+      y: -1.2
+      z: 0.3
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.7854  # Facing origin (45 degrees)

@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="aruco_marker_2">
+    <static>true</static>
+    <link name="marker_link">
+
+      <!-- Visual representation of the ArUco marker -->
+      <visual name="marker_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15 0.15 0.002</size>  <!-- 15cm x 15cm marker, 2mm thick -->
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+
+
+          <pbr>
+            <metal>
+              <albedo_map>model://aruco_marker_2/materials/textures/aruco_marker_2.png</albedo_map>
+              <metalness>0.0</metalness>
+              <roughness>0.9</roughness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+      <!-- White border around the marker (typical for ArUco) -->
+      <visual name="border_visual">
+        <pose>0 0 -0.001 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.18 0.18 0.001</size>  <!-- Slightly larger white backing -->
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- Collision geometry -->
+      <collision name="marker_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.18 0.18 0.005</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Inertial properties (minimal since static) -->
+      <inertial>
+        <mass>0.01</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+    </link>
+  </model>
+</sdf>

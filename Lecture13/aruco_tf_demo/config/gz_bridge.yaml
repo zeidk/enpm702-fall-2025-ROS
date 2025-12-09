@@ -1,0 +1,33 @@
+---
+# ROS-Gz Bridge Configuration for TurtleBot3 Waffle Pi
+# Topic names based on 'gz topic -l' output
+
+  - topic_name: /clock
+    ros_type_name: rosgraph_msgs/msg/Clock
+    gz_type_name: gz.msgs.Clock
+    direction: GZ_TO_ROS
+
+  - topic_name: /camera/image_raw
+    ros_type_name: sensor_msgs/msg/Image
+    gz_type_name: gz.msgs.Image
+    direction: GZ_TO_ROS
+
+  - topic_name: /camera/camera_info
+    ros_type_name: sensor_msgs/msg/CameraInfo
+    gz_type_name: gz.msgs.CameraInfo
+    direction: GZ_TO_ROS
+
+  - topic_name: /cmd_vel
+    ros_type_name: geometry_msgs/msg/TwistStamped
+    gz_type_name: gz.msgs.TwistStamped
+    direction: ROS_TO_GZ
+
+  - topic_name: /odom
+    ros_type_name: nav_msgs/msg/Odometry
+    gz_type_name: gz.msgs.Odometry
+    direction: GZ_TO_ROS
+
+  - topic_name: /scan
+    ros_type_name: sensor_msgs/msg/LaserScan
+    gz_type_name: gz.msgs.LaserScan
+    direction: GZ_TO_ROS
