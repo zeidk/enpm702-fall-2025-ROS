@@ -302,38 +302,54 @@ class MicroMouseNode : public rclcpp::Node {
    * @param goal Target cell
    * @return Path from start to goal, or nullopt if no path exists
    */
-  std::optional<std::vector<Cell>> dfs_plan(const Cell& start,
-                                            const Cell& goal) {
-    // =====================================================================
-    // TODO 5 (25 points): Implement DFS path planning
-    // =====================================================================
-    // Implement iterative Depth-First Search:
-    //
-    // 1. Create a stack (use std::vector as stack with push_back/pop_back)
-    // 2. Create a visited set (std::set<Cell>)
-    // 3. Create a parent map (std::map<Cell, Cell>) for path reconstruction
-    // 4. Push start onto stack, set parent[start] = start
-    //
-    // 5. While stack is not empty:
-    //    a. Pop current cell from stack
-    //    b. If already visited, continue
-    //    c. Mark as visited
-    //    d. If current == goal, reconstruct and return path
-    //    e. For each neighbor (N, E, S, W order):
-    //       - Skip if out of bounds
-    //       - Skip if wall blocks edge (use edge_free())
-    //       - If not visited and not in parent map, set parent
-    //       - If not visited, push onto stack
-    //
-    // 6. Return std::nullopt if no path found
-    //
-    // Path reconstruction: trace from goal back to start using parent map,
-    // then reverse the path.
-    // =====================================================================
-    // YOUR CODE HERE
-
-    return std::nullopt;  // Replace with actual implementation
-  }
+  std::optional<std::vector<Cell>> dfs_plan(const Cell& start, const Cell& goal) {
+        std::vector<Cell> stack;
+        std::set<Cell> visited;
+        std::map<Cell, Cell> parent;
+        
+        stack.push_back(start);
+        parent[start] = start;
+        
+        while (!stack.empty()) {
+            Cell cur = stack.back();
+            stack.pop_back();
+            
+            if (visited.count(cur)) continue;
+            visited.insert(cur);
+            
+            if (cur == goal) {
+                // Reconstruct path
+                std::vector<Cell> path;
+                for (Cell at = cur; !(at == parent[at]); at = parent[at]) {
+                    path.push_back(at);
+                }
+                path.push_back(start);
+                std::reverse(path.begin(), path.end());
+                return path;
+            }
+            
+            // Check neighbors: N, E, S, W priority
+            std::array<std::pair<Cell, Dir>, 4> neighbors = {{
+                {{cur.x, cur.y + 1}, Dir::North},
+                {{cur.x + 1, cur.y}, Dir::East},
+                {{cur.x, cur.y - 1}, Dir::South},
+                {{cur.x - 1, cur.y}, Dir::West}
+            }};
+            
+            for (const auto& [nxt, d] : neighbors) {
+                if (!in_bounds(nxt)) continue;
+                if (!edge_free(cur, d)) continue;
+                if (!visited.count(nxt) && !parent.count(nxt)) {
+                    parent[nxt] = cur;
+                }
+                if (!visited.count(nxt)) {
+                    stack.push_back(nxt);
+                }
+            }
+        }
+        
+        return std::nullopt;
+    }
 
   // =========================================================================
   // Visualization (PROVIDED)
