@@ -79,13 +79,12 @@ class MicroMouseNode : public rclcpp::Node {
     // YOUR CODE HERE
 
     // =====================================================================
-    // TODO 3 (5 points): Create service server for robot status
+    // PROVIDED: Service server for robot status
     // =====================================================================
-    // Create a service server for GetRobotStatus on "/get_robot_status".
-    // Bind to get_status_callback method.
-    // Store in status_srv_.
-    // =====================================================================
-    // YOUR CODE HERE
+    status_srv_ = this->create_service<GetRobotStatus>(
+        "/get_robot_status",
+        std::bind(&MicroMouseNode::get_status_callback, this,
+                  std::placeholders::_1, std::placeholders::_2));
 
     // =====================================================================
     // TODO 4 (10 points): Create action server for navigation
@@ -302,54 +301,57 @@ class MicroMouseNode : public rclcpp::Node {
    * @param goal Target cell
    * @return Path from start to goal, or nullopt if no path exists
    */
-  std::optional<std::vector<Cell>> dfs_plan(const Cell& start, const Cell& goal) {
-        std::vector<Cell> stack;
-        std::set<Cell> visited;
-        std::map<Cell, Cell> parent;
-        
-        stack.push_back(start);
-        parent[start] = start;
-        
-        while (!stack.empty()) {
-            Cell cur = stack.back();
-            stack.pop_back();
-            
-            if (visited.count(cur)) continue;
-            visited.insert(cur);
-            
-            if (cur == goal) {
-                // Reconstruct path
-                std::vector<Cell> path;
-                for (Cell at = cur; !(at == parent[at]); at = parent[at]) {
-                    path.push_back(at);
-                }
-                path.push_back(start);
-                std::reverse(path.begin(), path.end());
-                return path;
-            }
-            
-            // Check neighbors: N, E, S, W priority
-            std::array<std::pair<Cell, Dir>, 4> neighbors = {{
-                {{cur.x, cur.y + 1}, Dir::North},
-                {{cur.x + 1, cur.y}, Dir::East},
-                {{cur.x, cur.y - 1}, Dir::South},
-                {{cur.x - 1, cur.y}, Dir::West}
-            }};
-            
-            for (const auto& [nxt, d] : neighbors) {
-                if (!in_bounds(nxt)) continue;
-                if (!edge_free(cur, d)) continue;
-                if (!visited.count(nxt) && !parent.count(nxt)) {
-                    parent[nxt] = cur;
-                }
-                if (!visited.count(nxt)) {
-                    stack.push_back(nxt);
-                }
-            }
+  std::optional<std::vector<Cell>> dfs_plan(const Cell& start,
+                                            const Cell& goal) {
+    std::vector<Cell> stack;
+    std::set<Cell> visited;
+    std::map<Cell, Cell> parent;
+
+    stack.push_back(start);
+    parent[start] = start;
+
+    while (!stack.empty()) {
+      Cell cur = stack.back();
+      stack.pop_back();
+
+      if (visited.count(cur))
+        continue;
+      visited.insert(cur);
+
+      if (cur == goal) {
+        // Reconstruct path
+        std::vector<Cell> path;
+        for (Cell at = cur; !(at == parent[at]); at = parent[at]) {
+          path.push_back(at);
         }
-        
-        return std::nullopt;
+        path.push_back(start);
+        std::reverse(path.begin(), path.end());
+        return path;
+      }
+
+      // Check neighbors: N, E, S, W priority
+      std::array<std::pair<Cell, Dir>, 4> neighbors = {
+          {{{cur.x, cur.y + 1}, Dir::North},
+           {{cur.x + 1, cur.y}, Dir::East},
+           {{cur.x, cur.y - 1}, Dir::South},
+           {{cur.x - 1, cur.y}, Dir::West}}};
+
+      for (const auto& [nxt, d] : neighbors) {
+        if (!in_bounds(nxt))
+          continue;
+        if (!edge_free(cur, d))
+          continue;
+        if (!visited.count(nxt) && !parent.count(nxt)) {
+          parent[nxt] = cur;
+        }
+        if (!visited.count(nxt)) {
+          stack.push_back(nxt);
+        }
+      }
     }
+
+    return std::nullopt;
+  }
 
   // =========================================================================
   // Visualization (PROVIDED)
@@ -580,25 +582,24 @@ class MicroMouseNode : public rclcpp::Node {
   void get_status_callback(
       const std::shared_ptr<GetRobotStatus::Request> /*request*/,
       std::shared_ptr<GetRobotStatus::Response> response) {
-    // =====================================================================
-    // TODO 6 (10 points): Populate service response with robot status
-    // =====================================================================
-    // Fill in all 9 response fields:
-    //   - position_x, position_y: robot_.x, robot_.y
-    //   - direction: use dir_to_string(facing_)
-    //   - steps_taken: steps_
-    //   - steps_to_goal_estimate: Manhattan distance to goal
-    //     (use std::abs(goal_x_ - robot_.x) + std::abs(goal_y_ - robot_.y))
-    //   - elapsed_seconds: call get_elapsed_seconds() if running, else 0.0
-    //   - is_running: is_running_
-    //   - success: true (service call succeeded)
-    //   - message: "Navigation active" if running, else "Idle"
-    //
-    // Note: Use std::lock_guard<std::mutex> lock(state_mutex_) for thread
-    // safety
-    // =====================================================================
     std::lock_guard<std::mutex> lock(state_mutex_);
-    // YOUR CODE HERE
+
+    response->position_x = robot_.x;
+    response->position_y = robot_.y;
+    response->direction = dir_to_string(facing_);
+    response->steps_taken = steps_;
+    response->steps_to_goal_estimate =
+        std::abs(goal_x_ - robot_.x) + std::abs(goal_y_ - robot_.y);
+
+    if (is_running_) {
+      response->elapsed_seconds = get_elapsed_seconds();
+    } else {
+      response->elapsed_seconds = 0.0;
+    }
+
+    response->is_running = is_running_;
+    response->success = true;
+    response->message = is_running_ ? "Navigation active" : "Idle";
   }
 
   rclcpp_action::GoalResponse handle_goal(
